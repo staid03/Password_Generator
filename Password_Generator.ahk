@@ -17,11 +17,13 @@
 */
 #singleinstance , force
 
-mytext = %1%
+;parameter parsed to script after password is generated:
+newPassword = %1%
 
+;create GUI
 gui , add , picture , x0 y0 h200 w370 , background\background.jpg
 gui , font , s15
-gui , add , edit , x115 y20 w150,  %mytext%
+gui , add , edit , x115 y20 w150,  %newPassword%
 gui , font , s20
 gui , add , button , x155 y120 default , Generate
 gui , font , s8
@@ -53,9 +55,11 @@ return
 
 generatepassword()
 {
+	;location of the wordlists
 	wordlistfolder = %a_scriptdir%\wordlists\
 	file_foldercheck(wordlistfolder)
 
+	;variables of wordlist files
 	3letters = %wordlistfolder%3letterwords.txt
 	4letters = %wordlistfolder%4letterwords.txt
 	5letters = %wordlistfolder%5letterwords.txt
@@ -68,16 +72,20 @@ generatepassword()
 	file_foldercheck(6letters)
 	file_foldercheck(7letters)
 	file_foldercheck(8letters)
-	;3letterwords
 
+	;generate number to use to determine which list to use
 	random , randomNum , 3 , 8
 	randomWordList := %randomNum%letters
-	ifless , randomNum , 5
+	
+	;if using a 3 or 4 letter base word then add another 3 or 4 letter word onto it
+	iflessorequal , randomNum , 4
 	{
 		wordOne := getRandomWord(randomWordList)
+		
 		random , randomNum , 3 , 4
 		randomWordList := %randomNum%letters
 		wordTwo := getRandomWord(randomWordList)
+		
 		rawPassword = %wordOne%%wordTwo%		
 	}
 	else
@@ -104,14 +112,16 @@ getRandomWord(WordList)
 {
 	random , randomWordLine , 1 , 500
 	filereadline , passwordReturn , %WordList% , %randomWordLine%
-	;msgbox ,,, %passwordReturn%
 	return passwordReturn
 }
 return
 
 toughify(rawPassword)
 {
+	;make the first letter a capital
 	stringlower, rawPassword, rawPassword , T
+	
+	;replace a letter with a symbol
 	ifinstring , rawPassword , a
 	{
 		stringreplace , rawPassword , rawPassword , a , @		
@@ -151,8 +161,11 @@ toughify(rawPassword)
 			}
 		}		
 	}
-	random , suffixNum , 1 , 99
+	
+	;generate a random number to use as a suffix
+	random , suffixNum , 10 , 99
 	upgradedPassword = %rawPassword%%suffixNum%
+
 	return upgradedPassword
 }
 return 
