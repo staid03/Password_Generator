@@ -45,7 +45,9 @@ buttonOpenFolder:
 return 
 buttonAbout:
 {
-	run , notepad aboutme.txt
+	aboutme = aboutme.txt
+	file_foldercheck(aboutme)
+	run , notepad %aboutme%
 }
 return 
 
