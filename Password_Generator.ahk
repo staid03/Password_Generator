@@ -17,8 +17,7 @@
 */
 #singleinstance , force
 
-;parameter parsed to script after password is generated:
-newPassword = %1%
+renewGUI:
 
 ;create GUI
 gui , add , picture , x0 y0 h200 w370 , background\background.jpg
@@ -34,9 +33,9 @@ return
 
 buttonGenerate:
 {
-	created_password := generatepassword()
-	run , %a_scriptname% %created_password%
-	
+	newPassword := generatepassword()
+	gui , destroy
+	goto , renewGUI	
 }
 return 
 
